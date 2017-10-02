@@ -14,8 +14,6 @@
   elementTypeClass="com.intellij.lang.graphql.psi.GraphQLCompositeElementType"
   tokenTypeClass="com.intellij.lang.graphql.psi.GraphQLTokenType"
 
-  psiImplUtilClass="com.intellij.lang.graphql.psi.impl.GraphQLPsiImplUtil"
-
   implements("operationDefinition|fragmentDefinition|fragmentSpread|variable|field|argument|directive")="com.intellij.lang.graphql.psi.GraphQLNamedElement"
   mixin("operationDefinition|fragmentDefinition|fragmentSpread|variable|field|argument|directive")="com.intellij.lang.graphql.psi.impl.GraphQLNamedElementImpl"
 
@@ -49,7 +47,7 @@ private definition ::= shorthandQueryDefinition | operationDefinition | fragment
 private definitionRecover ::= !(operationType | 'fragment')
 
 operationDefinition ::= operationType identifier? variableDefinitions? directives? selectionSet {
-  pin=1 methods=[nameIdentifier="identifier" getName setName variableDefinitions="variableDefinition" directives="directive"]
+  pin=1 methods=[nameIdentifier="identifier" variableDefinitions="variableDefinition" directives="directive"]
 }
 
 shorthandQueryDefinition ::= selectionSet {
@@ -63,7 +61,7 @@ selectionSet ::= '{' selection* '}' {pin=1 methods=[selections="selection"]}
 selection ::= aliasedField | field | fragmentSpread | inlineFragment
 
 field ::= identifier arguments? directives? selectionSet? {
-  extends=selection methods=[nameIdentifier="identifier" getName setName arguments="argument" directives="directive"]
+  extends=selection methods=[nameIdentifier="identifier" arguments="argument" directives="directive"]
 }
 
 aliasedField ::= identifier ':' identifier arguments? directives? selectionSet? {
@@ -72,16 +70,16 @@ aliasedField ::= identifier ':' identifier arguments? directives? selectionSet? 
 
 private arguments ::= '(' argument* ')' {pin=1}
 
-argument ::= identifier ':' value {methods=[nameIdentifier="identifier" getName setName]}
+argument ::= identifier ':' value {methods=[nameIdentifier="identifier"]}
 
 fragmentSpread ::= '...' fragmentName directives? {
-  extends=selection methods=[nameIdentifier="identifier" getName setName directives="directive"]
+  extends=selection methods=[nameIdentifier="identifier" directives="directive"]
 }
 
 private fragmentName ::= !'on' identifier
 
 fragmentDefinition ::= 'fragment' fragmentName typeCondition directives? selectionSet {
-  pin=1 methods=[nameIdentifier="identifier" getName setName typeCondition="namedType" directives="directive"]
+  pin=1 methods=[nameIdentifier="identifier" typeCondition="namedType" directives="directive"]
 }
 
 private typeCondition ::= 'on' namedType
@@ -94,7 +92,7 @@ value ::= variableReference | numberValue | stringValue | booleanValue | nullVal
 
 variableReference ::= variable {extends=value}
 
-variable ::= '$' identifier {pin=1 methods=[nameIdentifier="identifier" getName setName]}
+variable ::= '$' identifier {pin=1 methods=[nameIdentifier="identifier"]}
 
 numberValue ::= NUMBER {extends=value}
 
@@ -118,7 +116,7 @@ objectField ::= identifier ':' value {methods=[nameIdentifier="identifier"]}
 
 private variableDefinitions ::= '(' variableDefinition* ')' {pin=1}
 
-variableDefinition ::= variable ':' type defaultValue? {methods=[nameIdentifier="identifier" getName setName defaultValue="value"]}
+variableDefinition ::= variable ':' type defaultValue? {methods=[nameIdentifier="identifier" defaultValue="value"]}
 
 private defaultValue ::= '=' value
 
@@ -132,6 +130,6 @@ nonNullType ::= (namedType | listType) '!' {extends=type methods=[ofType="type"]
 
 private directives ::= directive*
 
-directive ::= '@' identifier arguments? {methods=[nameIdentifier="identifier" getName setName arguments="argument"]}
+directive ::= '@' identifier arguments? {methods=[nameIdentifier="identifier" arguments="argument"]}
 
 identifier ::= NAME

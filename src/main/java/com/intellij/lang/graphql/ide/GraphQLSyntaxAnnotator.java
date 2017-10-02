@@ -35,7 +35,7 @@ public class GraphQLSyntaxAnnotator implements Annotator {
       createTextAttributesKey("GRAPHQL_DIRECTIVE", DefaultLanguageHighlighterColors.METADATA);
 
   @Override
-  public void annotate(@NotNull PsiElement element, @NotNull AnnotationHolder holder) {
+  public void annotate(@NotNull PsiElement element, @NotNull final AnnotationHolder holder) {
     element.accept(new GraphQLVisitor() {
       @Override
       public void visitOperationDefinition(@NotNull GraphQLOperationDefinition operationDefinition) {
