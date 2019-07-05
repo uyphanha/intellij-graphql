@@ -5,3 +5,4 @@ out/
 lib/
 build/
 .DS_Store
+src/generated/
