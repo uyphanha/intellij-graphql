@@ -7,4 +7,3 @@ build/
 .DS_Store
 src/generated/
 local.properties
-.github/
